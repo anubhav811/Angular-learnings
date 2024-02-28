@@ -1,9 +1,6 @@
 package com.anubhav.ecommerce.config;
 
-import com.anubhav.ecommerce.entity.Country;
-import com.anubhav.ecommerce.entity.Product;
-import com.anubhav.ecommerce.entity.ProductCategory;
-import com.anubhav.ecommerce.entity.State;
+import com.anubhav.ecommerce.entity.*;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.metamodel.EntityType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,22 +26,22 @@ public class MyDataRestConfig implements RepositoryRestConfigurer {
     @Override
     public void configureRepositoryRestConfiguration(RepositoryRestConfiguration configuration, CorsRegistry cors){
         HttpMethod[] unsupportedActions = {HttpMethod.PUT,HttpMethod.DELETE,HttpMethod.POST};
+        HttpMethod[] unsupportedActionsForOrders = {HttpMethod.PUT,HttpMethod.DELETE};
 
         // disable HTTP Methods for Product
         disableHttpMethods(Product.class, configuration, unsupportedActions);
-
         // disable HTP Methods for ProductCategory , Country and States
         disableHttpMethods(ProductCategory.class, configuration, unsupportedActions);
         disableHttpMethods(Country.class, configuration, unsupportedActions);
         disableHttpMethods(State.class, configuration, unsupportedActions);
-
+        // disable HTTP Methods for Order
+        disableHttpMethods(Order.class,configuration,unsupportedActionsForOrders);
         // call an internal helper method to expose the ids
         exposeIds(configuration);
 
         cors.addMapping("/api/**")
                 .allowedOrigins("http://localhost:4200")
                 .allowedMethods("GET", "POST", "PUT", "DELETE")
-                .allowedHeaders("*")
                 .allowCredentials(true)
                 .maxAge(3600);
 
